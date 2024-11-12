@@ -37,7 +37,7 @@ class Monster {
 
   drawHp(){
     if (this.hp == this.maxHp){
-      drawSprite(19, this.tile.x, this.tile.y);
+      //drawSprite(19, this.tile.x, this.tile.y);
     }
     if (this.hp < this.maxHp/10*10 && this.hp >= this.maxHp/10*9){
       drawSprite(20, this.tile.x, this.tile.y);
