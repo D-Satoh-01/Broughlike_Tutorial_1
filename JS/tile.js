@@ -50,17 +50,47 @@ class Tile {
 
   draw(){
     drawSprite(this.sprite, this.x, this.y);
+
+    if (this.tresure){
+      drawSprite(15, this.x, this.y);
+    }
   }
 }
 
 class Floor extends Tile{
   constructor(x, y){
     super(x, y, 30, true);
+  };
+
+  stepOn(monster){
+    if (monster.isPlayer && this.tresure){
+      score ++;
+      this.tresure = false;
+      spawnMonster();
+    }
   }
 }
 
 class Wall extends Tile{
-  constructor(x, y) {
+  constructor(x, y){
     super(x, y, 31, false);
+  }
+}
+
+class Exit extends Tile{
+  constructor(x, y){
+    super(x, y, 16, true);
+  }
+
+  stepOn(monster){
+    if (monster.isPlayer){
+      if (level == numLevels){
+        addScore(score, true);
+        showTitle();
+      } else {
+        level ++;
+        startLevel(Math.min(maxHp, player.hp+1));
+      }
+    }
   }
 }

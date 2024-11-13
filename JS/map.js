@@ -1,8 +1,14 @@
+let tiles = [];
+
 function generateLevel(){
   tryTo('generate map', function(){
     return generateTiles() == randomPassableTile().getConnectedTiles().length;
   });
   generateMonsters();
+
+  for (let i=0; i<3; i++){
+    randomPassableTile().tresure = true;
+  }
 }
 
 function generateTiles(){

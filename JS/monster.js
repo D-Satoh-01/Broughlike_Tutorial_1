@@ -1,17 +1,19 @@
 class Monster {
-  constructor(tile, sprite, maxHp, hp){
+  constructor(tile, sprite, fullHp, hp){
     this.move(tile);
     this.sprite = sprite;
-    this.maxHp = maxHp;
+    this.fullHp = fullHp;
     this.hp = hp;
+    this.teleportCounter = 2;
   }
 
   heal(damage){
-    this.hp = Math.min(this.maxHp, this.hp + damage);
+    this.hp = Math.min(this.fullHp, this.hp + damage);
   }
 
   update(){
-    if (this.stunned){
+    this.teleportCounter --;
+    if (this.stunned || this.teleportCounter > 0){
       this.stunned = false;
       return;
     }
@@ -31,42 +33,46 @@ class Monster {
   }
 
   draw(){
-    drawSprite(this.sprite, this.tile.x, this.tile.y);
-    this.drawHp();
+    if (this.teleportCounter > 0){
+      drawSprite(17, this.tile.x, this.tile.y);
+    } else {
+      drawSprite(this.sprite, this.tile.x, this.tile.y);
+      this.drawHp();
+    }
   }
 
   drawHp(){
-    if (this.hp == this.maxHp){
+    if (this.hp == this.fullHp){
       //drawSprite(19, this.tile.x, this.tile.y);
     }
-    if (this.hp < this.maxHp/10*10 && this.hp >= this.maxHp/10*9){
+    if (this.hp < this.fullHp/10*10 && this.hp >= this.fullHp/10*9){
       drawSprite(20, this.tile.x, this.tile.y);
     }
-    if (this.hp < this.maxHp/10*9 && this.hp >= this.maxHp/10*8){
+    if (this.hp < this.fullHp/10*9 && this.hp >= this.fullHp/10*8){
       drawSprite(21, this.tile.x, this.tile.y);
     }
-    if (this.hp < this.maxHp/10*8 && this.hp >= this.maxHp/10*7){
+    if (this.hp < this.fullHp/10*8 && this.hp >= this.fullHp/10*7){
       drawSprite(22, this.tile.x, this.tile.y);
     }
-    if (this.hp < this.maxHp/10*7 && this.hp >= this.maxHp/10*6){
+    if (this.hp < this.fullHp/10*7 && this.hp >= this.fullHp/10*6){
       drawSprite(23, this.tile.x, this.tile.y);
     }
-    if (this.hp < this.maxHp/10*6 && this.hp >= this.maxHp/10*5){
+    if (this.hp < this.fullHp/10*6 && this.hp >= this.fullHp/10*5){
       drawSprite(24, this.tile.x, this.tile.y);
     }
-    if (this.hp < this.maxHp/10*5 && this.hp >= this.maxHp/10*4){
+    if (this.hp < this.fullHp/10*5 && this.hp >= this.fullHp/10*4){
       drawSprite(25, this.tile.x, this.tile.y);
     }
-    if (this.hp < this.maxHp/10*4 && this.hp >= this.maxHp/10*3){
+    if (this.hp < this.fullHp/10*4 && this.hp >= this.fullHp/10*3){
       drawSprite(26, this.tile.x, this.tile.y);
     }
-    if (this.hp < this.maxHp/10*3 && this.hp >= this.maxHp/10*2){
+    if (this.hp < this.fullHp/10*3 && this.hp >= this.fullHp/10*2){
       drawSprite(27, this.tile.x, this.tile.y);
     }
-    if (this.hp < this.maxHp/10*2 && this.hp >= this.maxHp/10*1){
+    if (this.hp < this.fullHp/10*2 && this.hp >= this.fullHp/10*1){
       drawSprite(28, this.tile.x, this.tile.y);
     }
-    if (this.hp < this.maxHp/10*1 && this.hp >= this.maxHp/10*0){
+    if (this.hp < this.fullHp/10*1 && this.hp >= this.fullHp/10*0){
       drawSprite(29, this.tile.x, this.tile.y);
     }
   }
@@ -107,6 +113,7 @@ class Monster {
     }
     this.tile = tile;
     tile.monster = this;
+    tile.stepOn(this);
   }
 }
 
@@ -114,6 +121,7 @@ class Player extends Monster {
   constructor(tile){
     super(tile, 0, 5, 5);
     this.isPlayer = true;
+    this.teleportCounter = 0;
   }
   // プレイヤーのアクション後にtickを更新させる
   tryMove(dx, dy){
